@@ -5,15 +5,14 @@ services:
   web:
     build: ./back
     ports:
-      - "${BACK_PORT}:${BACK_PORT}"
+      - "${BACK_EXPOSE}:${BACK_PORT}"
     volumes:
-      - ./back:/app
-      - /app/node_modules
+      - ./back/app:/app/app
     depends_on:
       - db
     environment:
       - BACK_PORT=${BACK_PORT}
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
 
   db:
     image: postgres:13

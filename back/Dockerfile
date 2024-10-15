@@ -11,13 +11,14 @@ RUN apt-get update && apt-get install -y \
 COPY package*.json ./
 
 # Install Node.js dependencies
-RUN npm install
+RUN npm i && npm i -g nodemon
 
 # Copy the rest of the application
 COPY . .
 
-# Expose port (adjust as needed)
-EXPOSE 3000
+# Expose port
+EXPOSE 1010
 
 # Command to run the application
-CMD ["npm", "run", "build"]
+# CMD ["npm", "run", "build"]
+CMD ["npm", "run", "dev"]
