@@ -2,8 +2,9 @@
 version: '3'
 
 services:
-  web:
+  bot:
     build: ./back
+    container_name: mdehqon-bot
     ports:
       - "${BACK_EXPOSE}:${BACK_PORT}"
     volumes:
@@ -13,9 +14,11 @@ services:
     environment:
       - BACK_PORT=${BACK_PORT}
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 
   db:
     image: postgres:13
+    container_name: mdehqon-db
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
