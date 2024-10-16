@@ -17,7 +17,7 @@ RUN npm i && npm i -g nodemon
 COPY . .
 
 # Expose port
-EXPOSE 1010
+EXPOSE ${BACK_PORT}
 
 # Command to run the application
 # CMD ["npm", "run", "build"]
