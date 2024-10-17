@@ -7,11 +7,14 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const crypto = require('crypto');
-const rateLimit = require("express-rate-limit");
-const RedisStore = require("rate-limit-redis");
+const { rateLimit } = require("express-rate-limit");
+const { RedisStore } = require("rate-limit-redis");
 const Redis = require("ioredis");
-const winston = require('winston');
 const helmet = require('helmet');
+const logger = require('./logger');
+const db = require('./db/setup');
+
+db();
 
 const app = express();
 const port = process.env.BACK_PORT || 3000;
@@ -36,22 +39,6 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
-
-// Logging setup
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
-  ],
-});
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple(),
-  }));
-}
 
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
@@ -151,7 +138,7 @@ app.get('/db-test', async (req, res) => {
     client.release();
     res.json({ state: "✅", success: true, time: result.rows[0].now });
   } catch (err) {
-    logger.error('Database connection error', { error: err.message });
+    logger.error('❌ Database connection error', { error: err.message });
     res.status(500).json({ state: "❌", success: false, error: 'Database connection error' });
   }
 });
@@ -161,7 +148,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/listings', listingRoutes);
 
 app.listen(port, () => {
-  logger.info(`Server started on port ${port}`);
+  logger.info(`✅ PORT: ${port}`);
 });
 
 // Error handling middleware
