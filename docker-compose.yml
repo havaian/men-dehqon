@@ -2,7 +2,10 @@ version: '3'
 
 services:
   bot:
-    build: ./back
+    build: 
+      context: ./back
+      dockerfile: Dockerfile.dev 
+      # dockerfile: Dockerfile.prod 
     container_name: mdehqon-bot
     ports:
       - "${BACK_EXPOSE}:${BACK_PORT}"

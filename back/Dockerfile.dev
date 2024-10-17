@@ -1,4 +1,4 @@
-# Dockerfile
+# Development Dockerfile
 FROM node:18
 
 WORKDIR /app
@@ -19,6 +19,5 @@ COPY . .
 # Expose port
 EXPOSE ${BACK_PORT}
 
-# Command to run the application
-# CMD ["npm", "run", "build"]
-CMD ["npm", "run", "dev"]
+# Command to run tests (if any) and then start the application
+CMD npm test --passWithNoTests && npm run dev

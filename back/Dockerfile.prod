@@ -1,0 +1,36 @@
+# Production Dockerfile
+FROM node:18 AS builder
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies for testing)
+RUN npm ci
+
+# Copy the rest of the application
+COPY . .
+
+# Run tests
+RUN npm test
+
+# Production stage
+FROM node:18-slim
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy the application from the builder stage
+COPY --from=builder /app .
+
+# Expose port
+EXPOSE ${BACK_PORT}
+
+# Command to start the application
+CMD ["npm", "run", "build"]
